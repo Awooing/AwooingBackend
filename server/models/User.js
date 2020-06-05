@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt')
 
 const User = mongoose.Schema({
     username: String,
+    sluggedUsername: String,
     email: String,
     password: String, 
     showAs: String,
@@ -14,9 +15,9 @@ const User = mongoose.Schema({
     location: String
 })
 
-userSchema.pre("save", next => {
+User.pre("save", next => {
     this.password = bcrypt.hashSync(this.password, 10);
     next();
 });
 
-module.exports = mongoose.model("User", User)
+module.exports = mongoose.model("awoo_user", User)

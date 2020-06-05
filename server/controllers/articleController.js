@@ -1,46 +1,68 @@
 const Article = require('../models/Article')
 const mongoose = require('mongoose')
+const express = require('express').Router()
+const slugify = require('slugify')
+const authMiddleware = require('../middlewares/authMiddleware')
+const adminMiddleware = require('../middlewares/adminMiddleware')
 
-async function articleController(fastify, options) {
+express.get('/byId/:id', async (req, res) => {
+    res.header("Access-Control-Allow-Origin", "*")
+    res.header("Content-Type", "application/json")
+    if (mongoose.Types.ObjectId.isValid(req.params.id)) {
+        const article = await Article.findOne({_id: req.params.id})
+            if (article === null) {
+                res.status(404)
+                res.send({statusCode: 404, error: 'article doesn\'t exist'})
+            } else {
+                res.send(article)
+            }
+    } else {
+        res.status(400)
+        res.send({statusCode: 400, error: 'id is invalid'})
+    }
+})
 
-    fastify.get('/article/:id', async (req, res) => {
-        res.header("Access-Control-Allow-Origin", "*")
-        res.header("Content-Type", "application/json")
-        if (mongoose.Types.ObjectId.isValid(req.params.id)) {
-            const article = await Article.findOne({_id: req.params.id})
-                if (article === null) {
-                    res.status(404)
-                    return {statusCode: 404, error: 'image doesn\'t exist'}
-                } else {
-                    return article
-                }
-        } else {
-            res.status(400)
-            return {statusCode: 400, error: 'id is invalid'}
-        }
-    })
+express.get('/bySlug/:slug', async (req, res) => {
+    res.header("Access-Control-Allow-Origin", "*")
+    res.header("Content-Type", "application/json")
+    if (req.params.slug != null) {
+        const article = await Article.findOne({slug: req.params.slug})
+            if (article === null) {
+                res.status(404)
+                res.send({statusCode: 404, error: 'article doesn\'t exist'})
+            } else {
+                res.send(article)
+            }
+    } else {
+        res.status(400)
+        res.send({statusCode: 400, error: 'slug is missing'})
+    }
+})
 
-    fastify.post('/article', async (req, res) => {
-        res.header("Access-Control-Allow-Origin", "*")
-        res.header("Content-Type", "application/json")
-        const article = req.body;
-
-        if (article != null && article.title != null && article.content != null) {
+express.post('/', adminMiddleware, async (req, res) => {
+    res.header("Access-Control-Allow-Origin", "*")
+    res.header("Content-Type", "application/json")
+    const article = req.body;
+    if (article != null && article.title != null && article.content != null) {
+        const possible = Article.findOne({slug: slugify(req.body.title, { lower: true })});
+        if (possible === null) {
             const article = new Article({
                 title: req.body.title,
                 content: req.body.content,
                 userId: new mongoose.Types.ObjectId(),
-                createdAt: new Date()
+                createdAt: new Date(),
+                slug: slugify(req.body.title, { lower: true })
             })
             article.save()
-            // todo: auth
-            return {message: "success"}
+            res.send({message: "success"})
         } else {
             res.status(400)
-            return {statusCode: 400, error: 'invalid request'}
+            res.send({statusCode: 400, error: 'article by that name already exists'})
         }
-    })
+    } else {
+        res.status(400)
+        res.send({statusCode: 400, error: 'invalid request'})
+    }
+})
 
-}
-
-module.exports = articleController
+module.exports = express

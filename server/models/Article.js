@@ -4,7 +4,8 @@ const Article = mongoose.Schema({
     title: String,
     content: String,
     userId: mongoose.Types.ObjectId,
-    createdAt: Date
+    createdAt: Date,
+    slug: String
 })
 
 module.exports = mongoose.model("awoo_article", Article)

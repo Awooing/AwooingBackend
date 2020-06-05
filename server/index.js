@@ -1,6 +1,5 @@
 const env = require('dotenv')
-const config = require('./config')
-const fastify = require('fastify')()
+const express = require('express')
 const mongoose = require('mongoose')
 const connection = mongoose.connection;
 
@@ -8,9 +7,19 @@ env.config()
 
 connection.on("error", error => console.log("An error has occurred in connection to the database: ", error))
 
+// Express
+const server = express();
+server.set("secret", process.env.SECRET)
+server.use(require("cookie-parser")());
+server.use(require("cors")());
+server.use(require("body-parser").json());
+
 // Controllers
 const articleController = require('./controllers/articleController')
-fastify.register(articleController)
+server.use('/article', articleController)
+
+const userController = require('./controllers/userController')
+server.use('/user', userController)
 
 
 async function initMongoDb() {
@@ -23,7 +32,7 @@ async function initMongoDb() {
 
 async function initServer() {
     try {
-        await fastify.listen(process.env.LISTEN_PORT)
+        await server.listen(process.env.LISTEN_PORT)
         console.log(`Server is running at port ${process.env.LISTEN_PORT}`)
     } catch(e) {
         console.error("The server has encountered an error: ", e)
