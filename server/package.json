@@ -1,15 +1,21 @@
 {
-  "name": "noded",
+  "name": "awooing-backend",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Backend for the Awooing.moe website",
+  "main": "build/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node .",
+    "dev": "tsc && nodemon .",
+    "compile": "tsc"
   },
   "keywords": [],
-  "author": "",
+  "author": "Filip Vottus",
   "license": "ISC",
   "dependencies": {
+    "@types/bcrypt": "^3.0.0",
+    "@types/dotenv": "^8.2.0",
+    "@types/express": "^4.17.6",
+    "@types/mongoose": "^5.7.22",
     "bcrypt": "^4.0.1",
     "body-parser": "^1.19.0",
     "cookie-parser": "^1.4.5",
@@ -18,7 +24,11 @@
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.17",
+    "slugify": "^1.4.0",
+    "typescript": "^3.9.5"
+  },
+  "devDependencies": {
     "nodemon": "^2.0.4",
-    "slugify": "^1.4.0"
+    "concurrently": "^5.2.0"
   }
 }

@@ -1,11 +1,13 @@
 const Article = require('../models/Article')
 const mongoose = require('mongoose')
-const express = require('express').Router()
+import express, { Router } from 'express'
 const slugify = require('slugify')
 const authMiddleware = require('../middlewares/authMiddleware')
 const adminMiddleware = require('../middlewares/adminMiddleware')
 
-express.get('/byId/:id', async (req, res) => {
+const router = Router()
+
+router.get('/byId/:id', async (req, res) => {
     res.header("Access-Control-Allow-Origin", "*")
     res.header("Content-Type", "application/json")
     if (mongoose.Types.ObjectId.isValid(req.params.id)) {
@@ -22,7 +24,7 @@ express.get('/byId/:id', async (req, res) => {
     }
 })
 
-express.get('/bySlug/:slug', async (req, res) => {
+router.get('/bySlug/:slug', async (req, res) => {
     res.header("Access-Control-Allow-Origin", "*")
     res.header("Content-Type", "application/json")
     if (req.params.slug != null) {
@@ -39,7 +41,7 @@ express.get('/bySlug/:slug', async (req, res) => {
     }
 })
 
-express.post('/', adminMiddleware, async (req, res) => {
+router.post('/', adminMiddleware, async (req, res) => {
     res.header("Access-Control-Allow-Origin", "*")
     res.header("Content-Type", "application/json")
     const article = req.body;
@@ -65,4 +67,4 @@ express.post('/', adminMiddleware, async (req, res) => {
     }
 })
 
-module.exports = express
+module.exports = router

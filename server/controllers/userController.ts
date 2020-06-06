@@ -1,10 +1,12 @@
-const express = require('express').Router()
+import express, { Router } from 'express'
 const authMiddleware = require('../middlewares/authMiddleware')
 const adminMiddleware = require('../middlewares/adminMiddleware')
 const auth = require('../auth')
 const jwt = require('jsonwebtoken')
 
-express.get('/byId/:id', async (req, res) => {
+const router = Router()
+
+router.get('/byId/:id', async (req, res) => {
     res.header("Access-Control-Allow-Origin", "*")
     res.header("Content-Type", "application/json")
     if (auth.isAuthenticated(req)) {
@@ -14,7 +16,7 @@ express.get('/byId/:id', async (req, res) => {
     }
 })
 
-express.get('/bySlug/:slug', async (req, res) => {
+router.get('/bySlug/:slug', async (req, res) => {
     res.header("Access-Control-Allow-Origin", "*")
     res.header("Content-Type", "application/json")
     if (auth.isAuthenticated(req)) {
@@ -24,7 +26,7 @@ express.get('/bySlug/:slug', async (req, res) => {
     }
 })
 
-express.post('/', async (req, res) => {
+router.post('/', async (req, res) => {
     res.header("Access-Control-Allow-Origin", "*")
     res.header("Content-Type", "application/json")
 
@@ -34,10 +36,10 @@ express.post('/', async (req, res) => {
 
 })
 
-express.put('/', async (req, res) => {
+router.put('/', async (req, res) => {
     res.header("Access-Control-Allow-Origin", "*")
     res.header("Content-Type", "application/json")
     res.send({todo: "yes, me lazi"})
 })
 
-module.exports = express
+module.exports = router
