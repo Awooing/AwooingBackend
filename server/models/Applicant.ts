@@ -5,4 +5,4 @@ const Applicant = new Schema({
     content: { type: String, required: true }
 })
 
-module.exports = model("awoo_council_applicant", Applicant)
+export default model("awoo_council_applicant", Applicant)

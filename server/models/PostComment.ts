@@ -7,4 +7,4 @@ const PostComment = new Schema({
     createdAt: { type: Date, required: true, default: new Date() }
 })
 
-module.exports = model("PostComment", PostComment)
+export default model("PostComment", PostComment)

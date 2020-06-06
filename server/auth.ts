@@ -1,7 +1,7 @@
 import * as jwt from 'jsonwebtoken'
 import { Request, Response } from 'express'
 
-const config = require('./config')
+import config from './config'
 const secret: string = config.jwtSecret
 
 function isAuthenticated(req: Request): Boolean {
@@ -40,7 +40,7 @@ function middleware(req: Request, res: Response, next: Function): void {
     }
 }
 
-module.exports = {
+export default {
     isAuthenticated,
     getDecodedString,
     getBearerToken,

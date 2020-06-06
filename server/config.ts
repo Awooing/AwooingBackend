@@ -4,7 +4,7 @@ const database = "awooing"
 const port = 4000
 const jwtSecret = "vriqDOm%&qbpqWgWCfy2cLF0c1oSF6$b"
 
-module.exports = {
+export default {
     username,
     password,
     database,

@@ -8,4 +8,4 @@ const Article = new Schema({
     slug: String
 })
 
-module.exports = model("awoo_article", Article)
+export default model("awoo_article", Article)

@@ -8,4 +8,4 @@ const CouncilMember = new Schema({
     userId: { type: Types.ObjectId, required: false }
 })
 
-module.exports = model("awoo_council_members", CouncilMember)
+export default model("awoo_council_members", CouncilMember)

@@ -1,7 +1,9 @@
 import express from 'express'
 import mongoose from 'mongoose'
+import config from './config'
 
-const config = require('./config')
+import cors from 'cors'
+import bodyParser from 'body-parser'
 
 const connection: mongoose.Connection = mongoose.connection
 connection.on("error", error => console.error("[Awooing] [MongoDB] An error has occurred: ", error))
@@ -9,15 +11,15 @@ connection.on("error", error => console.error("[Awooing] [MongoDB] An error has 
 // Express
 const server: express.Application = express()
 server.set("secret", config.jwtSecret)
-server.use(require('cookie-parser')())
-server.use(require('cors')())
-server.use(require('body-parser').json())
+server.use(cors())
+server.use(bodyParser.json())
 
 // Controllers
-const articleController = require('./controllers/articleController')
+import articleController from './controllers/articleController'
+
 server.use('/article', articleController)
 
-const userController = require('./controllers/userController')
+import userController from './controllers/userController'
 server.use('/user', userController)
 
 async function initMongoDB() {

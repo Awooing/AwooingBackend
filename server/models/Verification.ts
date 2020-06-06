@@ -6,4 +6,4 @@ const Verification = new Schema({
     type: { type: String, required: true }
 })
 
-module.exports = model("awoo_verify", Verification)
+export default model("awoo_verify", Verification)

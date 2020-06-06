@@ -8,4 +8,4 @@ const ProfileComment = new Schema({
     createdAt: { type: Date, required: true, default: new Date() }
 })
 
-module.exports = mongoose.model("awoo_profile_comment", ProfileComment)
+export default mongoose.model("awoo_profile_comment", ProfileComment)

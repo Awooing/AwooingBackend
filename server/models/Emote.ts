@@ -6,4 +6,4 @@ const Emote = new Schema({
     identifier: { type: String, required: true, unique: true }
 })
 
-module.exports = model("Emote", Emote)
+export default model("Emote", Emote)

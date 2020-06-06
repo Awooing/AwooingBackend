@@ -5,4 +5,4 @@ const VoteStatistic = new Schema({
     votes: { type: Number, required: true }
 })
 
-module.exports = model("awoo_council_vote", VoteStatistic)
+export default model("awoo_council_vote", VoteStatistic)

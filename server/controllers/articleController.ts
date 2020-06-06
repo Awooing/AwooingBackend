@@ -1,16 +1,15 @@
-const Article = require('../models/Article')
-const mongoose = require('mongoose')
-import express, { Router } from 'express'
-const slugify = require('slugify')
-const authMiddleware = require('../middlewares/authMiddleware')
-const adminMiddleware = require('../middlewares/adminMiddleware')
+import { Types } from 'mongoose'
+import Article from '../models/Article'
+import { Router, Request, Response } from 'express'
+import slugify from 'slugify'
+import adminMiddleware from '../middlewares/adminMiddleware'
 
 const router = Router()
 
-router.get('/byId/:id', async (req, res) => {
+router.get('/byId/:id', async (req: Request, res: Response) => {
     res.header("Access-Control-Allow-Origin", "*")
     res.header("Content-Type", "application/json")
-    if (mongoose.Types.ObjectId.isValid(req.params.id)) {
+    if (Types.ObjectId.isValid(req.params.id)) {
         const article = await Article.findOne({_id: req.params.id})
             if (article === null) {
                 res.status(404)
@@ -24,7 +23,7 @@ router.get('/byId/:id', async (req, res) => {
     }
 })
 
-router.get('/bySlug/:slug', async (req, res) => {
+router.get('/bySlug/:slug', async (req: Request, res: Response) => {
     res.header("Access-Control-Allow-Origin", "*")
     res.header("Content-Type", "application/json")
     if (req.params.slug != null) {
@@ -41,7 +40,7 @@ router.get('/bySlug/:slug', async (req, res) => {
     }
 })
 
-router.post('/', adminMiddleware, async (req, res) => {
+router.post('/', adminMiddleware, async (req: Request, res: Response) => {
     res.header("Access-Control-Allow-Origin", "*")
     res.header("Content-Type", "application/json")
     const article = req.body;
@@ -51,7 +50,7 @@ router.post('/', adminMiddleware, async (req, res) => {
             const article = new Article({
                 title: req.body.title,
                 content: req.body.content,
-                userId: new mongoose.Types.ObjectId(),
+                userId: new Types.ObjectId(),
                 createdAt: new Date(),
                 slug: slugify(req.body.title, { lower: true })
             })
@@ -67,4 +66,4 @@ router.post('/', adminMiddleware, async (req, res) => {
     }
 })
 
-module.exports = router
+export default router
