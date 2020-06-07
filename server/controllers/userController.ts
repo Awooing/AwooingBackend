@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express'
-import rateLimitMiddleware from '../middlewares/registerRateLimitMiddleware'
+import rateLimitMiddleware from '../middlewares/rateLimitMiddleware'
 import auth from '../auth'
 import User from '../models/User'
 import slugify from 'slugify'
@@ -35,17 +35,36 @@ router.post('/', async (req: Request, res: Response) => {
 
 })
 
+// todo: re-enable the rate limit middleware
+
 router.put('/', rateLimitMiddleware, async (req: Request, res: Response) => {
     res.header("Access-Control-Allow-Origin", "*")
     res.header("Content-Type", "application/json")
-    const user = User.create({
-        username: "Vottus2",
-        email: "vottus@vottus.xyz",
-        sluggedUsername: slugify("Vottus2", {lower: true}),
-        password: "lol123",
-    })
-    ;(await user).save
-    res.send({todo: "yes, me lazi"})
+
+    /*
+    */
+    if ((req.body !== null && req.body !== undefined) && (req.body.username !== null && req.body.username !== undefined) && (req.body.password !== null && req.body.password !== undefined)) {
+        const user = await User.findOne({username: req.body.username})
+        if (user === null || user === undefined) {
+            const email = await User.findOne({email: req.body.email})
+            if (email === null || email === undefined) {
+                const user = User.create({
+                    username: req.body.username,
+                    email: req.body.email,
+                    sluggedUsername: slugify(req.body.username, {lower: true}),
+                    password: req.body.password,
+                })
+                ;(await user).save
+                res.send({message: "success"})
+            } else {
+                res.send({errorCode: 400, message: "email is already used"})
+            }
+        } else {
+            res.send({errorCode: 400, message: "username is already used"})
+        }
+    } else {
+        res.send({errorCode: 400, message: "invalid request"})
+    }
 })
 
 export default router
