@@ -4,43 +4,34 @@ import { Request, Response } from 'express'
 import user from './models/User'
 import auth from './auth'
 
-
-// returns false if user doesn't exist,
-// otherwise returns string role
-function getUserRole(id: Types.ObjectId) {
-    const u = user.findOne({_id: id})
-    if (u.getQuery === null) {
-        return null 
-    } else {
-        return u.getQuery().role
-    }
+async function getUserRole(id: Types.ObjectId): Promise<any> {
+    const u = await user.findOne({_id: id})
+    return u?.role
 }
 
 
-// returns false if user doesn't exist,
-// otherwise returns boolean
-function isCouncilMember(id: Types.ObjectId) {
-    const role = getUserRole(id)
+// returns false if user doesn't exist
+async function isCouncilMember(id: Types.ObjectId): Promise<Boolean> {
+    const role = await getUserRole(id)
     if (role === null) {
-        return null
+        return false
     } else {
         return role === "Council"
     }
 }
 
-// returns false if user doesn't exist,
-// otherwise returns boolean
-function isUser(id: Types.ObjectId) {
-    const role = getUserRole(id)
+// returns false if user doesn't exist
+async function isUser(id: Types.ObjectId): Promise<Boolean> {
+    const role = await getUserRole(id)
     if (role === null) {
-        return null
+        return false
     } else {
         return role === "User"
     }
 }
 
 function middleware(req: Request, res: Response, next: Function): void {
-    if (auth.isAuthenticated(req) && isCouncilMember(auth.getDecodedString(req))) {
+    if (auth.isAuthenticated(req) && isCouncilMember(new Types.ObjectId(auth.getDecodedString(req)))) {
         next()
     } else {
         res.status(401)
