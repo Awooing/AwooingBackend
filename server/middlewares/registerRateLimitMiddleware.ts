@@ -6,4 +6,6 @@ const settings = {
     message: "too many registrations"
 }
 
-export default rateLimit(settings)
+const limited: rateLimit.RateLimit = rateLimit(settings)
+
+export default limited

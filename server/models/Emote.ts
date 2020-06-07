@@ -1,4 +1,11 @@
-import { Schema, Types, model } from 'mongoose'
+import { Schema, Document, model } from 'mongoose'
+
+export interface IEmote extends Document {
+    name: String,
+    discordUrl: String,
+    identifier: String
+}
+
 
 const Emote = new Schema({
     name: { type: String, required: true, unique: true },
@@ -6,4 +13,4 @@ const Emote = new Schema({
     identifier: { type: String, required: true, unique: true }
 })
 
-export default model("Emote", Emote)
+export default model<IEmote>("awoo_emote", Emote)

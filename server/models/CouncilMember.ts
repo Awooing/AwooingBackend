@@ -1,4 +1,12 @@
-import { Schema, Types, model } from 'mongoose'
+import { Schema, Types, Document, model } from 'mongoose'
+
+export interface ICouncilMember extends Document {
+    name: string,
+    position: string,
+    about: string,
+    discordId: Number,
+    userId: Types.ObjectId
+}
 
 const CouncilMember = new Schema({
     name: { type: String, required: true, unique: true },
@@ -8,4 +16,4 @@ const CouncilMember = new Schema({
     userId: { type: Types.ObjectId, required: false }
 })
 
-export default model("awoo_council_members", CouncilMember)
+export default model<ICouncilMember>("awoo_council_member", CouncilMember)

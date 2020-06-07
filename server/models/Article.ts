@@ -1,11 +1,19 @@
-import { Schema, Types, model } from 'mongoose'
+import { Schema, Document, Types, model } from 'mongoose'
 
-const Article = new Schema({
-    title: String,
-    content: String,
+export interface IArticle extends Document {
+    title: string,
+    content: string,
     userId: Types.ObjectId,
     createdAt: Date,
-    slug: String
+    slug?: string
+}
+
+const Article = new Schema({
+    title: { type: String, required: true, unique: true },
+    content: { type: String, required: true },
+    userId: { type: Types.ObjectId, required: true },
+    createdAt: { type: Date, required: true },
+    slug: { type: String, required: true, unique: true }
 })
 
-export default model("awoo_article", Article)
+export default model<IArticle>("awoo_article", Article)

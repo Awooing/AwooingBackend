@@ -12,7 +12,7 @@ function getUserRole(id: Types.ObjectId) {
     if (u.getQuery === null) {
         return null 
     } else {
-        return u.getQuery().u
+        return u.getQuery().role
     }
 }
 

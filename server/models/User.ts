@@ -14,7 +14,6 @@ export interface IUser extends Document {
     joinDate?: Date,
     userLocation?: string
 }
- 
 
 const User = new Schema({
     username: { type: String, required: true, unique: true },
