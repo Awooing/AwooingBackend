@@ -7,10 +7,10 @@ export interface IUser extends Document {
     email: string,
     password: string, 
     showAs?: string,
-    active?: Number,
-    emailVerified?: Number,
+    active?: number,
+    emailVerified?: number,
     role?: string, 
-    discordId?: Number,
+    discordId?: string,
     joinDate?: Date,
     userLocation?: string
 }

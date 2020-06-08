@@ -21,6 +21,12 @@ server.use('/article', articleController)
 import userController from './controllers/userController'
 server.use('/user', userController)
 
+import newsController from './controllers/newsController'
+server.use('/news', newsController)
+
+import councilController from './controllers/councilController'
+server.use('/council', councilController)
+
 async function initMongoDB() {
     await mongoose.connect(`mongodb+srv://${config.username}:${config.password}@uwucluster-mtxvo.mongodb.net/${config.database}?retryWrites=true&w=majority`, {
         useNewUrlParser: true,
