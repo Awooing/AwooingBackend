@@ -16,7 +16,6 @@ server.use(bodyParser.json())
 
 // Controllers
 import articleController from './controllers/articleController'
-
 server.use('/article', articleController)
 
 import userController from './controllers/userController'

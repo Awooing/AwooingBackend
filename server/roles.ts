@@ -13,7 +13,7 @@ async function getUserRole(id: Types.ObjectId): Promise<any> {
 // returns false if user doesn't exist
 async function isCouncilMember(id: Types.ObjectId): Promise<Boolean> {
     const role = await getUserRole(id)
-    if (role === null) {
+    if (role === null || role === undefined) {
         return false
     } else {
         return role === "Council"
@@ -30,8 +30,8 @@ async function isUser(id: Types.ObjectId): Promise<Boolean> {
     }
 }
 
-function middleware(req: Request, res: Response, next: Function): void {
-    if (auth.isAuthenticated(req) && isCouncilMember(new Types.ObjectId(auth.getDecodedString(req)))) {
+async function middleware(req: Request, res: Response, next: Function): Promise<void> {
+    if (auth.isAuthenticated(req) && await isCouncilMember(new Types.ObjectId(auth.getDecodedString(req)))) {
         next()
     } else {
         res.status(401)

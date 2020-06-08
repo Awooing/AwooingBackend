@@ -1,23 +1,23 @@
 import * as jwt from 'jsonwebtoken'
-import { Request, Response } from 'express'
+import { Request, Response, NextFunction } from 'express'
 
 import config from './config'
+import { Types } from 'mongoose';
 const secret: string = config.jwtSecret
 
-function isAuthenticated(req: Request): Boolean {
-    jwt.verify(getBearerToken(req).replace("Bearer ", ""), secret, (err: any, decoded: any) => {
+function isAuthenticated(req: Request): any {
+    return jwt.verify(getBearerToken(req).replace("Bearer ", ""), secret, (err: any, decoded: any) => {
         if (err) {
             return false
         } else {
             return true
         }
     });
-    return false
 }
 
 function getDecodedString(req: Request): any {
     const token = getBearerToken(req)
-    jwt.verify(token.replace("Bearer ", ""), secret, (err: any, decoded: any) => {
+    return jwt.verify(token.replace("Bearer ", ""), secret, (err: any, decoded: any) => {
         if(err) {
             return null
         } else {
@@ -31,7 +31,7 @@ function getBearerToken(req: Request): string {
     return token
 }
 
-function middleware(req: Request, res: Response, next: Function): void {
+function middlewareIn(req: Request, res: Response, next: NextFunction): void {
     if (isAuthenticated(req)) {
         next()
     } else {
@@ -40,9 +40,28 @@ function middleware(req: Request, res: Response, next: Function): void {
     }
 }
 
+function middlewareOut(req: Request, res: Response, next: NextFunction): void {
+    if (!isAuthenticated(req)) {
+        next()
+    } else {
+        res.status(200)
+        res.json({statusCode: 200, message: "already logged in"})
+    }
+}
+
+function matchesCurrent(req: Request, id: Types.ObjectId) {
+    if (isAuthenticated(req)) {
+        return id.equals(getDecodedString(req))
+    } else {
+        return false
+    }
+}
+
 export default {
     isAuthenticated,
     getDecodedString,
     getBearerToken,
-    middleware
+    matchesCurrent,
+    middlewareIn,
+    middlewareOut
 }

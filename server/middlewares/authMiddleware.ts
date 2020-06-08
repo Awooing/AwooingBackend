@@ -1,8 +1,8 @@
 import auth from '../auth'
-import { Request, Response } from 'express'
+import { Request, Response, NextFunction } from 'express'
 
-function authenticate(req: Request, res: Response, next: Function) {
-    auth.middleware(req, res, next)
+function authenticate(req: Request, res: Response, next: NextFunction) {
+    auth.middlewareIn(req, res, next)
 }
 
 export default authenticate
