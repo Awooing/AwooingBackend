@@ -1,4 +1,4 @@
-import roles from '../roles'
+import roles from '../managers/roles'
 import { Request, Response } from 'express'
 
 function authorize(req: Request, res: Response, next: Function) {

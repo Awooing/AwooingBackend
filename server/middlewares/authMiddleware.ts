@@ -1,4 +1,4 @@
-import auth from '../auth'
+import auth from '../managers/auth'
 import { Request, Response, NextFunction } from 'express'
 
 function authenticate(req: Request, res: Response, next: NextFunction) {

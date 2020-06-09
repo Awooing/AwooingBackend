@@ -1,5 +1,5 @@
-import axios, { AxiosResponse } from 'axios'
-import config from '../config'
+import axios from 'axios'
+import config from '../../config'
 
 async function getUserById(discordId: string): Promise<any> {
         const response = await axios.get(`https://discord.com/api/v6/users/${discordId}`, {

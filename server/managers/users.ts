@@ -1,5 +1,32 @@
-import User from "./models/User";
+import User from "../models/User";
 import { Types } from "mongoose";
+
+
+export interface UserInformation {
+    userId?: Types.ObjectId,
+    username?: string,
+    sluggedUsername?: string,
+    showAs?: string,
+    joinDate?: Date,
+    location?: string,
+    role?: string
+}
+
+export interface DiscordState {
+    linked?: boolean,
+    discordId?: any
+}
+
+export interface AccountState {
+    active?: boolean,
+    emailVerified?: boolean
+}
+
+export interface PersonalUserInformation extends UserInformation {
+    email?: string,
+    state: AccountState,
+    discord: DiscordState
+}
 
 async function generateInformationGlobal(id: Types.ObjectId): Promise<Object> {
     const user = await User.findById(id)
@@ -14,7 +41,7 @@ async function generateInformationGlobal(id: Types.ObjectId): Promise<Object> {
     }
 }
 
-async function generateInformationPersonal(id: Types.ObjectId): Promise<Object> {
+async function generateInformationPersonal(id: Types.ObjectId): Promise<PersonalUserInformation> {
     const user = await User.findById(id)
     return {
         userId: user?._id,
@@ -29,8 +56,8 @@ async function generateInformationPersonal(id: Types.ObjectId): Promise<Object> 
             emailVerified: user?.emailVerified === 1,
         },
         discord: {
-            linked: user?.discordId !== 0,
-            discordId: user?.discordId !== 0 ? user?.discordId : null
+            linked: user?.discordId !== "0",
+            discordId: user?.discordId !== "0" ? user?.discordId : null
         },
         role: user?.role,
     }

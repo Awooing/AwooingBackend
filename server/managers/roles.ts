@@ -1,7 +1,7 @@
 import { Types } from "mongoose"
 import { Request, Response } from 'express'
 
-import user from './models/User'
+import user from '../models/User'
 import auth from './auth'
 
 async function getUserRole(id: Types.ObjectId): Promise<any> {

@@ -3,7 +3,7 @@ import Article from '../models/Article'
 import { Router, Request, Response } from 'express'
 import slugify from 'slugify'
 import adminMiddleware from '../middlewares/adminMiddleware'
-import auth from '../auth'
+import auth from '../managers/auth'
 
 const router = Router()
 

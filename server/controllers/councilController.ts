@@ -1,21 +1,12 @@
 import { Router, Request, Response } from 'express'
-import {S3} from 'aws-sdk'
 import CouncilMember, { ICouncilMember } from '../models/CouncilMember'
-import discordRepo from '../models/DiscordRepo'
+import discordRepo from '../models/repos/DiscordRepo'
 const router = Router()
 
-import cdn from '../models/CdnRepo'
-import { GetObjectOutput, ListObjectsV2Output } from 'aws-sdk/clients/s3'
 
 router.get('/', async (req: Request, res: Response) => {
     const response = await createMembersArray()
     await res.send({members: await response})
-})
-
-router.get('/shit', async (req: Request, res: Response) => {
-    const image = await cdn.getRandomAwoo()
-    console.log(image)
-    res.send(image)
 })
 
 async function createMembersArray(): Promise<Array<Object>> {

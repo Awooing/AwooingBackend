@@ -1,7 +1,7 @@
 import * as jwt from 'jsonwebtoken'
 import { Request, Response, NextFunction } from 'express'
 
-import config from './config'
+import config from '../config'
 import { Types } from 'mongoose';
 const secret: string = config.jwtSecret
 

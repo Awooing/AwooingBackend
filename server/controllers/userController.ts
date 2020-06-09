@@ -2,13 +2,12 @@ import { Router, Request, Response } from 'express'
 import rateLimitMiddleware from '../middlewares/rateLimitMiddleware'
 import authMiddleware from '../middlewares/authMiddleware'
 import validate from '../middlewares/validObjectIdMiddleware'
-import auth from '../auth'
+import auth from '../managers/auth'
 import User from '../models/User'
 import slugify from 'slugify'
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
-import userHelper from '../user'
-import { Types } from 'mongoose'
+import userHelper from '../managers/users'
 
 const router = Router()
 

@@ -1,31 +1,30 @@
-import express from 'express'
-import mongoose from 'mongoose'
+/**
+ * Awooing.moe Backend
+ * 2020 Vottus
+ * 
+ * File: index.ts
+ * 
+ */
+
+/** Imports */
+
+// Configuration
 import config from './config'
 
+// Database
+import mongoose from 'mongoose'
+
+// Express
+import express from 'express'
+import controller from './managers/controllers'
 import cors from 'cors'
 import bodyParser from 'body-parser'
 
+/** Startup */
+
+// MongoDB
 const connection: mongoose.Connection = mongoose.connection
 connection.on("error", error => console.error("[Awooing] [MongoDB] An error has occurred: ", error))
-
-// Express
-const server: express.Application = express()
-server.set("secret", config.jwtSecret)
-server.use(cors())
-server.use(bodyParser.json())
-
-// Controllers
-import articleController from './controllers/articleController'
-server.use('/article', articleController)
-
-import userController from './controllers/userController'
-server.use('/user', userController)
-
-import newsController from './controllers/newsController'
-server.use('/news', newsController)
-
-import councilController from './controllers/councilController'
-server.use('/council', councilController)
 
 async function initMongoDB() {
     await mongoose.connect(`mongodb+srv://${config.username}:${config.password}@uwucluster-mtxvo.mongodb.net/${config.database}?retryWrites=true&w=majority`, {
@@ -34,6 +33,15 @@ async function initMongoDB() {
     })
     console.log(`[Awooing] [MongoDB] Connected successfully.`)
 }
+
+
+// Express
+const server: express.Application = express()
+server.set("secret", config.jwtSecret)
+server.use(cors())
+server.use(bodyParser.json())
+server.set('json spaces', 2)
+server.use(controller)
 
 async function initServer() {
     try {

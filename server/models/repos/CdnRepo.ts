@@ -1,5 +1,5 @@
-import config from '../config'
-import aws, {Endpoint, S3} from 'aws-sdk'
+import config from '../../config'
+import { S3 } from 'aws-sdk'
 import m3 from 'multer-s3'
 
 const awsS3 = new S3({
@@ -14,47 +14,40 @@ const cdn = m3({
 })
 
 export interface File {
-    path: string,
-    lastModified: Date,
-    size: number
+    path?: string,
+    lastModified?: Date,
+    size?: number
 }
 
-// var image = data.Contents[Math.floor(Math.random() * data.Contents.length)]
-
-// res.send({
-//     path: image.Key,
-//     fileSize: image.Size,
-//     createdAt: image.LastModified
-// })
-
-function getAwooImages(): Array<File> {
+async function getAwooImages(): Promise<Array<File>> {
     const settings: S3.Types.ListObjectsV2Request = {
         Bucket: "awooing",
         Prefix: "i/"
     }
     const images: Array<File> = []
-    awsS3.listObjectsV2(settings, function (err: Error, data: any) {
-        for (let image of data.Contents) {
+    const result = await awsS3.listObjectsV2(settings).promise()
+    if (result.Contents !== null && result.Contents !== undefined) {
+        for (let image of result.Contents) {
             images.push({
                 path: image.Key,
                 lastModified: image.LastModified,
                 size: image.Size
             })
         }
-    })
+    }
     console.log(images)
     return images
 }
 
-function getAwooImage(id: number): File
+async function getAwooImage(id: number): Promise<File>
 {
-    const images = getAwooImages()
+    const images = await getAwooImages()
     return images[id]
 }
 
-function getRandomAwoo(): File
+async function getRandomAwoo(): Promise<File>
 {
-    const images = getAwooImages()
+    const images = await getAwooImages()
     return images[Math.floor(Math.random() * images.length)]
 }
 
