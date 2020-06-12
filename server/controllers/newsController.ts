@@ -4,6 +4,7 @@ const router = Router()
 
 
 router.get('/', async (req: Request, res: Response) => {
+    console.log(req.body)
     if ((req.body !== null && req.body !== undefined) && (req.body.perPage !== null || req.body.perPage !== undefined) && (req.body.currentPage !== null && req.body.currentPage !== undefined)){
         const maxPerPage = req.body.perPage
         const articles = await Article.find().skip(maxPerPage*(req.body.currentPage-1)).limit(maxPerPage)
@@ -14,6 +15,8 @@ router.get('/', async (req: Request, res: Response) => {
                 last: await getPageCount(maxPerPage)
             }
         })
+    } else {
+        res.send({errorCode: 422, message: "invalid request"})
     }
 })
 

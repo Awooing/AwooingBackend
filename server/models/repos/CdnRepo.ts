@@ -8,11 +8,6 @@ const awsS3 = new S3({
     secretAccessKey: config.cdnSecretKey,
 })
 
-const cdn = m3({
-    s3: awsS3,
-    bucket: 'awooing',
-})
-
 export interface File {
     path?: string,
     lastModified?: Date,
@@ -28,14 +23,15 @@ async function getAwooImages(): Promise<Array<File>> {
     const result = await awsS3.listObjectsV2(settings).promise()
     if (result.Contents !== null && result.Contents !== undefined) {
         for (let image of result.Contents) {
-            images.push({
-                path: image.Key,
-                lastModified: image.LastModified,
-                size: image.Size
-            })
+            if (image.Key !== "i/") {
+                images.push({
+                    path: image.Key,
+                    lastModified: image.LastModified,
+                    size: image.Size
+                })
+            }
         }
     }
-    console.log(images)
     return images
 }
 
