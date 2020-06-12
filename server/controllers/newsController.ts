@@ -4,14 +4,13 @@ const router = Router()
 
 
 router.get('/', async (req: Request, res: Response) => {
-    console.log(req.body)
-    if ((req.body !== null && req.body !== undefined) && (req.body.perPage !== null || req.body.perPage !== undefined) && (req.body.currentPage !== null && req.body.currentPage !== undefined)){
-        const maxPerPage = req.body.perPage
-        const articles = await Article.find().skip(maxPerPage*(req.body.currentPage-1)).limit(maxPerPage)
+    if ((req.query !== null && req.query !== undefined) && (req.query.perPage !== null && req.query.perPage !== undefined) && (req.query.currentPage !== null && req.query.currentPage !== undefined)){
+        const maxPerPage = Number.parseInt(req.query.perPage.toString())
+        const articles = await Article.find().skip(maxPerPage*(Number.parseInt(req.query.currentPage.toString())-1)).limit(maxPerPage)
         res.send({
             news: articles,
             pageInfo: {
-                current: req.body.currentPage,
+                current: req.query.currentPage,
                 last: await getPageCount(maxPerPage)
             }
         })
