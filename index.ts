@@ -27,7 +27,7 @@ const connection: mongoose.Connection = mongoose.connection
 connection.on("error", error => console.error("[Awooing] [MongoDB] An error has occurred: ", error))
 
 async function initMongoDB() {
-    await mongoose.connect(`mongodb+srv://${config.username}:${config.password}@uwucluster-mtxvo.mongodb.net/${config.database}?retryWrites=true&w=majority`, {
+    await mongoose.connect(`mongodb://localhost:27017/?readPreference=primary&&ssl=false`, {
         useNewUrlParser: true,
         useUnifiedTopology: true
     })

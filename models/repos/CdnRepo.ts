@@ -1,6 +1,5 @@
 import config from '../../config'
 import { S3 } from 'aws-sdk'
-import m3 from 'multer-s3'
 
 const awsS3 = new S3({
     endpoint: `${config.cdnRegion}.digitaloceanspaces.com`,
