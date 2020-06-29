@@ -1,4 +1,3 @@
-import * as auth from '../managers/auth'
 import User from '../models/User'
 import slugify from 'slugify'
 import * as argon2 from 'argon2'
@@ -62,7 +61,7 @@ export default fp(async (server, opts, next) => {
   )
 
   server.get(
-    '/user/byId/:id',
+    '/user/byid/:id',
     {
       schema: {
         headers: {
@@ -100,6 +99,7 @@ export default fp(async (server, opts, next) => {
           },
         },
       },
+
       config: {
         rateLimit: {
           timeWindow: 1000 * 30,

@@ -2,21 +2,38 @@ import Article from '../models/Article'
 import * as fp from 'fastify-plugin'
 
 export default fp(async (server, opts, next) => {
-  server.get('/news', async (request, reply) => {
-    const maxPerPage = Number.parseInt(request.query.perPage.toString())
-    const articles = await Article.find()
-      .skip(
-        maxPerPage * (Number.parseInt(request.query.currentPage.toString()) - 1)
-      )
-      .limit(maxPerPage)
-    reply.send({
-      news: articles,
-      pageInfo: {
-        current: request.query.currentPage,
-        last: await getPageCount(maxPerPage),
+  server.get(
+    '/news',
+    {
+      schema: {
+        querystring: {
+          required: ['perPage', 'currentPage'],
+          type: 'object',
+          properties: {
+            perPage: {
+              type: 'integer',
+            },
+            currentPage: {
+              type: 'integer',
+            },
+          },
+        },
       },
-    })
-  })
+    },
+    async (request, reply) => {
+      const maxPerPage = request.query.perPage as number
+      const articles = await Article.find()
+        .skip(maxPerPage * (request.query.currentPage - 1))
+        .limit(maxPerPage)
+      reply.send({
+        news: articles,
+        pageInfo: {
+          current: request.query.currentPage,
+          last: await getPageCount(maxPerPage),
+        },
+      })
+    }
+  )
 })
 
 async function getPageCount(perPage: number) {

@@ -5,7 +5,7 @@ import * as fp from 'fastify-plugin'
 import parseBearerToken from 'parse-bearer-token'
 
 export default fp(async (server, opts, next) => {
-  server.get('/article/byId/:id', async (request, reply) => {
+  server.get('/article/byid/:id', async (request, reply) => {
     reply.header('Access-Control-Allow-Origin', '*')
     reply.header('Content-Type', 'application/json')
     if (!Types.ObjectId.isValid(request.params.id))
@@ -18,7 +18,7 @@ export default fp(async (server, opts, next) => {
     reply.send(article)
   })
 
-  server.get('/article/bySlug/:slug', async (req, res) => {
+  server.get('/article/byslug/:slug', async (req, res) => {
     res.header('Access-Control-Allow-Origin', '*')
     res.header('Content-Type', 'application/json')
     if (req.params.slug === null)
@@ -57,10 +57,10 @@ export default fp(async (server, opts, next) => {
     async (req, res) => {
       res.header('Access-Control-Allow-Origin', '*')
       res.header('Content-Type', 'application/json')
-      if (!Types.ObjectId.isValid(req.body.id) === false)
+      if (!Types.ObjectId.isValid(req.body.id))
         return res.send({ statusCode: 422, error: 'invalid request' })
       const article = await Article.findById(req.body.id)
-      if (article === null || article === undefined)
+      if (article === null)
         return res.send({ statusCode: 422, error: 'invalid request' })
       await article.update({
         title: req.body.title,
@@ -96,10 +96,10 @@ export default fp(async (server, opts, next) => {
     async (req, res) => {
       res.header('Access-Control-Allow-Origin', '*')
       res.header('Content-Type', 'application/json')
-      const possible = Article.findOne({
+      const possible = await Article.findOne({
         slug: slugify(req.body.title, { lower: true }),
-      })
-      if (possible === null || possible === undefined)
+      }).exec()
+      if (possible !== null && possible !== undefined)
         return res
           .send({
             statusCode: 400,
@@ -107,16 +107,17 @@ export default fp(async (server, opts, next) => {
           })
           .status(400)
 
-      const article = new Article({
+      const userId = server.jwt.decode(
+        parseBearerToken(req as any) as string
+      ) as string
+
+      await new Article({
         title: req.body.title,
         content: req.body.content,
-        userId: new Types.ObjectId(
-          (parseBearerToken(req as any) as any) as Types.ObjectId
-        ),
+        userId,
         createdAt: new Date(),
         slug: slugify(req.body.title, { lower: true }),
-      })
-      await article.save()
+      }).save()
       res.send({ message: 'success' })
     }
   )

@@ -7,6 +7,7 @@ export default fp(async (server, opts, next) => {
     const response = await createMembersArray()
     reply.send({ members: response })
   })
+  next()
 })
 
 async function createMembersArray(): Promise<Array<Object>> {
