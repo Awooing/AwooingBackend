@@ -14,6 +14,35 @@ import { ApolloServer } from 'apollo-server'
 
 import typeDefs from './gql/typeDefs'
 import resolvers from './gql/resolvers'
+import { createLogger, format, transports } from 'winston'
+
+import path from 'path'
+
+const loggerFormat = format.printf(({ level, message, timestamp }) => {
+  return `${timestamp} | ${level}: ${message}`
+})
+
+export const logger = createLogger({
+  transports: [
+    new transports.Console({
+      format: format.combine(
+        format.timestamp(),
+        format.colorize(),
+        loggerFormat
+      ),
+      handleExceptions: true,
+    }),
+    new transports.File({
+      format: format.combine(format.timestamp(), loggerFormat),
+      filename: path.join(__dirname, '../', 'logs', 'combined.log'),
+    }),
+  ],
+  exceptionHandlers: [
+    new transports.File({
+      filename: path.join(__dirname, '../', 'logs', 'exceptions.log'),
+    }),
+  ],
+})
 
 class Awooing {
   mongo: Connection = connection
@@ -30,10 +59,10 @@ class Awooing {
 
   async initMongoDB() {
     this.mongo.on('error', (e) => {
-      console.error('[Awooing] [MongoDB] An error has occurred: ', e)
+      logger.error('[MongoDB] An error has occurred: ', e)
     })
     this.mongo.on('disconnected', (e) => {
-      console.warn('[Awooing] [MongoDB] Got disconnected!')
+      logger.warn('[MongoDB] Got disconnected!')
     })
 
     try {
@@ -44,10 +73,10 @@ class Awooing {
         useCreateIndex: true,
         autoIndex: false,
       })
-      console.log(`[Awooing] [MongoDB] Connected successfully.`)
+      logger.info(`[MongoDB] Connected successfully.`)
     } catch (e) {
-      console.error(
-        '[Awooing] [MongoDB] Unable to connect to the MongoDB database ',
+      logger.error(
+        '[MongoDB] Unable to connect to the MongoDB database ',
         e
       )
     }
@@ -56,9 +85,9 @@ class Awooing {
   async initApollo() {
     try {
       const { url } = await this.server.listen()
-      console.log(`[Awooing] [Apollo] Server is listening at ${url}`)
+      logger.info(`[Apollo] Server is listening at ${url}`)
     } catch (e) {
-        console.error("[Awooing] [Apollo] Unable to launch Apollo Server.")
+      logger.error('[Apollo] Unable to launch Apollo Server.')
     }
   }
 }

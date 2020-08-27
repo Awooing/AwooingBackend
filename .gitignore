@@ -1,3 +1,9 @@
 build
 node_modules
 tsconfig.tsbuildinfo
+/build
+/logs
+
+# IDEs
+.idea
+.vscode

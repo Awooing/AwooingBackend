@@ -25,7 +25,8 @@
     "mongoose": "^5.9.20",
     "slugify": "^1.4.4",
     "ts-node": "^9.0.0",
-    "typescript": "^3.9.7"
+    "typescript": "^3.9.7",
+    "winston": "^3.3.3"
   },
   "devDependencies": {
     "@types/aws-sdk": "^2.7.0",
