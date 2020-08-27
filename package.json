@@ -2,18 +2,18 @@
   "name": "awooing-backend",
   "version": "1.0.0",
   "description": "Backend for the Awooing.moe website",
-  "main": "build/index.js",
+  "main": "src/index.ts",
   "scripts": {
-    "start": "node ./build/index",
-    "dev": "tsc && nodemon .",
-    "compile": "tsc --build --incremental",
+    "start": "NODE_ENV=production ts-node .",
+    "dev": "NODE_ENV=development nodemon --e ts,js,json --exec ts-node .",
     "format": "prettier --write src/**/*.ts --list-different",
-
     "prec": "yarn format",
     "c": "git add . && git commit -m",
     "p": "git push origin"
   },
-  "keywords": ["awoo"],
+  "keywords": [
+    "awoo"
+  ],
   "author": "Vottus, Niputi",
   "license": "ISC",
   "dependencies": {
@@ -21,23 +21,17 @@
     "aws-sdk": "^2.706.0",
     "axios": "^0.19.2",
     "dotenv": "^8.2.0",
-    "fastify": "^2.15.1",
-    "fastify-auth": "^0.7.2",
-    "fastify-cors": "^3.0.3",
-    "fastify-jwt": "^1.4.0",
-    "fastify-plugin": "^1.6.1",
-    "fastify-rate-limit": "^3.0.1",
     "mongoose": "^5.9.20",
-    "parse-bearer-token": "^1.0.1",
     "slugify": "^1.4.4",
-    "typescript": "^3.9.5"
+    "ts-node": "^9.0.0",
+    "typescript": "^3.9.7"
   },
   "devDependencies": {
-    "prettier": "^2.0.5",
-    "nodemon": "^2.0.4",
     "@types/aws-sdk": "^2.7.0",
     "@types/axios": "^0.14.0",
     "@types/dotenv": "^8.2.0",
-    "@types/mongoose": "^5.7.28"
+    "@types/mongoose": "^5.7.28",
+    "nodemon": "^2.0.4",
+    "prettier": "^2.0.5"
   }
 }
