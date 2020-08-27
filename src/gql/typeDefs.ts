@@ -3,10 +3,21 @@ import { gql } from 'apollo-server'
 export const typeDefs = gql`
   type Query {
     me: User
+    articleById(id: ID!): Article
+    articleBySlug(slug: String!): Article
   }
 
   type Mutation {
+    login(identifier: String!, password: String): LoginResult
     register(username: String!, email: String!, password: String!): Boolean
+    resetPass(email: String!): Boolean
+    createArticle(title: String!, content: String!): Boolean
+    editArticle(id: ID!, title: String, content: String): Boolean
+    deleteArticle(id: ID!): Boolean
+  }
+
+  type LoginResult {
+    token: String!
   }
 
   type User {

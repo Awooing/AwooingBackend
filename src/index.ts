@@ -18,6 +18,7 @@ import { createLogger, format, transports } from 'winston'
 
 import fs from 'fs'
 import path from 'path'
+import Jwt from './helpers/Jwt'
 
 const loggerFormat = format.printf(({ level, message, timestamp }) => {
   return `${timestamp} | ${level}: ${message}`
@@ -53,9 +54,10 @@ export class Awooing {
     playground: Awooing.env() === 'development',
     context: ({ req }) => {
       return {
-        token: req.headers.authorization
-          ? String(req.headers.authorization).replace('Bearer ', '')
-          : null,
+        token: {
+          valid: Jwt.isValid(req.headers.authorization || ''),
+          payload: Jwt.getPayload(req.headers.authorization || ''),
+        },
         isAuthenticated: Boolean(req.headers.authorization),
       }
     },
@@ -64,7 +66,7 @@ export class Awooing {
   constructor() {
     logger.info(`Starting Awooing Backend v${Awooing.version()}`)
     if (Awooing.env() === 'development') {
-        logger.warn("The backend is running in development mode.")
+      logger.warn('The backend is running in development mode.')
     }
     this.init()
   }
@@ -117,7 +119,7 @@ export class Awooing {
   }
 }
 
-type EnvironmentType = "development" | "production"
+type EnvironmentType = 'development' | 'production'
 
 const awooing = new Awooing()
 export default awooing
