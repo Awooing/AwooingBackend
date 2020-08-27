@@ -7,10 +7,14 @@
     "start": "node ./build/index",
     "dev": "tsc && nodemon .",
     "compile": "tsc --build --incremental",
-    "format": "prettier --write src/**/*.ts --list-different"
+    "format": "prettier --write src/**/*.ts --list-different",
+
+    "prec": "yarn format",
+    "c": "git add . && git commit -m",
+    "p": "git push origin"
   },
-  "keywords": [],
-  "author": "Filip Vottus",
+  "keywords": ["awoo"],
+  "author": "Vottus, Niputi",
   "license": "ISC",
   "dependencies": {
     "argon2": "^0.26.2",
