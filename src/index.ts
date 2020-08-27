@@ -47,10 +47,25 @@ export const logger = createLogger({
 
 export class Awooing {
   mongo: Connection = connection
-  server: ApolloServer = new ApolloServer({ typeDefs, resolvers })
+  server: ApolloServer = new ApolloServer({
+    typeDefs,
+    resolvers,
+    playground: Awooing.env() === 'development',
+    context: ({ req }) => {
+      return {
+        token: req.headers.authorization
+          ? String(req.headers.authorization).replace('Bearer ', '')
+          : null,
+        isAuthenticated: Boolean(req.headers.authorization),
+      }
+    },
+  })
 
   constructor() {
     logger.info(`Starting Awooing Backend v${Awooing.version()}`)
+    if (Awooing.env() === 'development') {
+        logger.warn("The backend is running in development mode.")
+    }
     this.init()
   }
 
@@ -77,10 +92,7 @@ export class Awooing {
       })
       logger.info(`[MongoDB] Connected successfully.`)
     } catch (e) {
-      logger.error(
-        '[MongoDB] Unable to connect to the MongoDB database ',
-        e
-      )
+      logger.error('[MongoDB] Unable to connect to the MongoDB database ', e)
     }
   }
 
@@ -94,10 +106,18 @@ export class Awooing {
   }
 
   static version() {
-    const pkg = path.join(__dirname, "..", "package.json")
-    return fs.existsSync(pkg) ? JSON.parse(fs.readFileSync(pkg, "utf-8")).version || "3.0.0" : "3.0.0"
+    const pkg = path.join(__dirname, '..', 'package.json')
+    return fs.existsSync(pkg)
+      ? JSON.parse(fs.readFileSync(pkg, 'utf-8')).version || '3.0.0'
+      : '3.0.0'
+  }
+
+  static env(): EnvironmentType {
+    return (process.env.NODE_ENV as EnvironmentType) || 'production'
   }
 }
+
+type EnvironmentType = "development" | "production"
 
 const awooing = new Awooing()
 export default awooing
