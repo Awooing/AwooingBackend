@@ -16,6 +16,7 @@ import typeDefs from './gql/typeDefs'
 import resolvers from './gql/resolvers'
 import { createLogger, format, transports } from 'winston'
 
+import fs from 'fs'
 import path from 'path'
 
 const loggerFormat = format.printf(({ level, message, timestamp }) => {
@@ -44,11 +45,12 @@ export const logger = createLogger({
   ],
 })
 
-class Awooing {
+export class Awooing {
   mongo: Connection = connection
   server: ApolloServer = new ApolloServer({ typeDefs, resolvers })
 
   constructor() {
+    logger.info(`Starting Awooing Backend v${Awooing.version()}`)
     this.init()
   }
 
@@ -89,6 +91,11 @@ class Awooing {
     } catch (e) {
       logger.error('[Apollo] Unable to launch Apollo Server.')
     }
+  }
+
+  static version() {
+    const pkg = path.join(__dirname, "..", "package.json")
+    return fs.existsSync(pkg) ? JSON.parse(fs.readFileSync(pkg, "utf-8")).version || "3.0.0" : "3.0.0"
   }
 }
 

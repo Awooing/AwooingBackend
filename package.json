@@ -1,6 +1,6 @@
 {
   "name": "awooing-backend",
-  "version": "1.0.0",
+  "version": "3.0.0-alpha",
   "description": "Backend for the Awooing.moe website",
   "main": "src/index.ts",
   "scripts": {
