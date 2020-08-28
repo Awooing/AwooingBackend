@@ -8,17 +8,17 @@
 
 /** Imports */
 
-import { mongoUri } from './config'
 import { connect as dbConnect, connection, Connection } from 'mongoose'
 import { ApolloServer } from 'apollo-server'
-
-import typeDefs from './gql/typeDefs'
-import resolvers from './gql/resolvers'
 import { createLogger, format, transports } from 'winston'
 
 import fs from 'fs'
 import path from 'path'
-import Jwt from './helpers/Jwt'
+
+import { mongoUri } from './config'
+import typeDefs from './http/gql/typeDefs'
+import resolvers from './http/gql/resolvers'
+import Jwt from './http/helpers/Jwt'
 
 const loggerFormat = format.printf(({ level, message, timestamp }) => {
   return `${timestamp} | ${level}: ${message}`

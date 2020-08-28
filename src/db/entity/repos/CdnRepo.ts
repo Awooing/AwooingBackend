@@ -1,3 +1,6 @@
+/**
+ * @deprecated This file is deprecated and will be deleted soon.
+ */
 import config from '../../config'
 import { S3 } from 'aws-sdk'
 

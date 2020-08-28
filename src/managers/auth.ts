@@ -1,4 +1,7 @@
-import user from '../models/User'
+/**
+ * @deprecated this file is deprecated and will be removed soon.
+ */
+import user from '../db/entity/User'
 import { Types } from 'mongoose'
 
 /**

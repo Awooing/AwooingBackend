@@ -1,4 +1,4 @@
-import { jwtSecret } from '../config'
+import { jwtSecret } from '../../config'
 import { Types } from 'mongoose'
 
 import * as jwt from 'jsonwebtoken'

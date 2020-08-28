@@ -1,3 +1,6 @@
+/**
+ * @deprecated This file is deprecated and will be deleted soon.
+ */
 import axios from 'axios'
 import config from '../../config'
 

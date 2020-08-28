@@ -1,8 +1,8 @@
 import { ApolloError, ApolloServer, IResolvers } from 'apollo-server'
 import * as argon2 from 'argon2'
 import Jwt, { JwtPayload } from '../helpers/Jwt'
-import Article from '../models/Article'
-import User from '../models/User'
+import Article from '../../db/entity/Article'
+import User from '../../db/entity/User'
 
 export const resolvers: IResolvers = {
   Query: {

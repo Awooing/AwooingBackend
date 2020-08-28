@@ -3,7 +3,7 @@ node_modules
 tsconfig.tsbuildinfo
 /build
 /logs
-
+/src/config.ts
 # IDEs
 .idea
 .vscode
