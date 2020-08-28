@@ -146,7 +146,7 @@ export const resolvers: IResolvers = {
         )
       }
 
-      let article = await Article.findOne({ id })
+      const article = await Article.findById(id)
       if (!article) {
         throw new ApolloError("Article doesn't exist.", 'ARTICLE_NOT_FOUND')
       }

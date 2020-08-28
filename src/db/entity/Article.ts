@@ -41,4 +41,16 @@ Article.pre('save', async function (this: IArticle, next: HookNextFunction) {
   next()
 })
 
+Article.pre('update', async function (this: any, next: HookNextFunction) {
+  let slug = this._update.slug || slugify(this._update.title, { lower: true })
+  const slugExists = await mongoose.connection
+    .collection('awoo_articles')
+    .findOne({ slug })
+  slugExists && (slug = `${slug}-${shortid.generate()}`)
+
+  this._update.slug = slug
+
+  next()
+})
+
 export default model<IArticle>('awoo_article', Article)
