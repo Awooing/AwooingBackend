@@ -26,7 +26,7 @@ export class ArticleCommentRepository {
   }
 
   async findPageCount(article: IArticle, perPage: number) {
-    const comments = await ArticleComment.find({articleId: article.id})
+    const comments = await ArticleComment.find({ articleId: article.id })
     const count = comments.length
 
     if (count < 1) return 0
