@@ -21,7 +21,7 @@ const Article = new Schema({
   content: { type: String, required: true },
   userId: { type: Schema.Types.ObjectId, required: true },
   createdAt: { type: Date, required: true, default: new Date() },
-  slug: { type: String, required: true, unique: true },
+  slug: { type: String, required: false, unique: true },
 })
 
 Article.pre('save', async function (this: IArticle, next: HookNextFunction) {

@@ -123,8 +123,9 @@ export const resolvers: IResolvers = {
           'UNAUTHORIZED'
         )
 
-      const article = await Article.create({ title, content, userId: user.id })
-      return article
+      await Article.create({ title, content, userId: user.id })
+
+      return true
     },
 
     editArticle: async (_, { id, title, content }, { token }) => {
