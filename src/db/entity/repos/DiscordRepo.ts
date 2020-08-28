@@ -1,5 +1,6 @@
 /**
  * @deprecated This file is deprecated and will be deleted soon.
+ * @use http/helpers/Discord.ts
  */
 import axios from 'axios'
 import config from '../../config'

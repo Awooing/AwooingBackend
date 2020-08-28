@@ -1,5 +1,6 @@
 /**
  * @deprecated This file is deprecated and will be deleted soon.
+ * @use http/helpers/Cdn.ts
  */
 import config from '../../config'
 import { S3 } from 'aws-sdk'
