@@ -49,6 +49,7 @@ export const typeDefs = gql`
     content: String
     author: User
     createdAt: String
+    comments: [ArticleComment]
   }
 
   type CouncilMember {
@@ -67,7 +68,7 @@ export const typeDefs = gql`
     identifier: String
   }
 
-  type PostComment {
+  type ArticleComment {
     id: ID!
     post: Article
     author: User
