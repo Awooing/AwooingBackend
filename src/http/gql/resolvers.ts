@@ -10,29 +10,31 @@ export const resolvers: IResolvers = {
   Query: {
     me: async (_, __, { token }) => {
       if (!token.valid) {
-        console.log('invalid')
-        return null
+        throw new ApolloError('Token is invalid.', 'AUTH_TOKEN_INVALID')
       }
 
       const payload = token.payload as JwtPayload
 
       const user = await User.findById(payload.userId)
       if (!user) {
-        console.log('not found')
-        return null
+        throw new ApolloError('Token is invalid.', 'AUTH_TOKEN_INVALID')
       }
 
       return user
     },
     articleById: async (_, { id }) => {
       const article = await Article.findById(id)
-      if (!article) return null
+      if (!article) {
+        throw new ApolloError('Article not found.', 'ARTICLE_NOT_FOUND')
+      }
 
       return article
     },
     articleBySlug: async (_, { slug: articleSlug }) => {
       const article = await Article.findOne(articleSlug)
-      if (!article) return null
+      if (!article) {
+        throw new ApolloError('Article not found.', 'ARTICLE_NOT_FOUND')
+      }
 
       return new ArticleRepository().getGqlResponse(article)
     },
@@ -101,12 +103,13 @@ export const resolvers: IResolvers = {
     },
 
     createArticle: async (_, { title, content }, { token }) => {
-      if (!token.valid) return null
+      if (!token.valid) {
+        throw new ApolloError('Token is invalid.', 'AUTH_TOKEN_INVALID')
+      }
       const payload = token.payload
 
       const user = await User.findById(payload.userId)
-      if (!user)
-        throw new ApolloError('You are not logged in.', 'NOT_LOGGED_IN')
+      if (!user) throw new ApolloError('Token is invalid.', 'AUTH_TOKEN_INVALID')
 
       if (user.role !== 'Admin')
         throw new ApolloError(
@@ -119,12 +122,14 @@ export const resolvers: IResolvers = {
     },
 
     editArticle: async (_, { id, title, content }, { token }) => {
-      if (!token.valid) return null
+      if (!token.valid) {
+        throw new ApolloError('Token is invalid.', 'AUTH_TOKEN_INVALID')
+      }
       const payload = token.payload
 
       const user = await User.findById(payload.userId)
       if (!user) {
-        throw new ApolloError('You are not logged in.', 'NOT_LOGGED_IN')
+        throw new ApolloError('Token is invalid.', 'AUTH_TOKEN_INVALID')
       }
 
       if (user.role !== 'Admin') {
@@ -149,12 +154,14 @@ export const resolvers: IResolvers = {
     },
 
     deleteArticle: async (_, { id }, { token }) => {
-      if (!token.valid) return null
+      if (!token.valid) {
+        throw new ApolloError('Token is invalid.', 'AUTH_TOKEN_INVALID')
+      }
       const payload = token.payload
 
       const user = await User.findById(payload.userId)
       if (!user) {
-        throw new ApolloError('You are not logged in.', 'NOT_LOGGED_IN')
+        throw new ApolloError('Token is invalid.', 'AUTH_TOKEN_INVALID')
       }
 
       if (user.role !== 'Admin') {
@@ -182,12 +189,14 @@ export const resolvers: IResolvers = {
     },
 
     createComment: async (_, { articleId, content }, { token }) => {
-      if (!token.valid) return null
+      if (!token.valid) {
+        throw new ApolloError('Token is invalid.', 'AUTH_TOKEN_INVALID')
+      }
       const payload = token.payload
 
       const user = await User.findById(payload.userId)
       if (!user) {
-        throw new ApolloError('You are not logged in.', 'NOT_LOGGED_IN')
+        throw new ApolloError('Token is invalid.', 'AUTH_TOKEN_INVALID')
       }
 
       const article = Article.findById(articleId)
@@ -207,12 +216,14 @@ export const resolvers: IResolvers = {
       return comment
     },
     deleteComment: async (_, { commentId }, { token }) => {
-      if (!token.valid) return null
+      if (!token.valid) {
+        throw new ApolloError('Token is invalid.', 'AUTH_TOKEN_INVALID')
+      }
       const payload = token.payload
 
       const user = await User.findById(payload.userId)
       if (!user) {
-        throw new ApolloError('You are not logged in.', 'NOT_LOGGED_IN')
+        throw new ApolloError('Token is invalid.', 'AUTH_TOKEN_INVALID')
       }
 
       const comment = await ArticleComment.findById(commentId)

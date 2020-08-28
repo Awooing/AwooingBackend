@@ -35,13 +35,6 @@ export class ArticleCommentRepository {
 
     return Math.ceil(count / perPage)
   }
-
-  async getGqlResponse(comment: IArticleComment) {
-    let author = await User.findOne({ id: comment.authorId })
-    if (!author) author = null
-
-    return {}
-  }
 }
 
 export default ArticleCommentRepository
