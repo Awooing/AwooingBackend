@@ -1,10 +1,11 @@
-import { ApolloError, ApolloServer, IResolvers } from 'apollo-server'
+import { ApolloError, IResolvers } from 'apollo-server'
 import * as argon2 from 'argon2'
 import Jwt, { JwtPayload } from '../helpers/Jwt'
-import Article, { IArticle } from '../../db/entity/Article'
+import Article from '../../db/entity/Article'
 import User from '../../db/entity/User'
 import ArticleComment from '../../db/entity/ArticleComment'
 import { ArticleRepository } from '../../db/repository/ArticleRepository'
+import { Types } from 'mongoose'
 
 export const resolvers: IResolvers = {
   Query: {
@@ -23,6 +24,10 @@ export const resolvers: IResolvers = {
       return user
     },
     articleById: async (_, { id }) => {
+      if (!Types.ObjectId.isValid(id)) {
+        throw new ApolloError(`'${id}' is not a valid ObjectId.`)
+      }
+
       const article = await Article.findById(id)
       if (!article) {
         throw new ApolloError('Article not found.', 'ARTICLE_NOT_FOUND')
@@ -109,7 +114,8 @@ export const resolvers: IResolvers = {
       const payload = token.payload
 
       const user = await User.findById(payload.userId)
-      if (!user) throw new ApolloError('Token is invalid.', 'AUTH_TOKEN_INVALID')
+      if (!user)
+        throw new ApolloError('Token is invalid.', 'AUTH_TOKEN_INVALID')
 
       if (user.role !== 'Admin')
         throw new ApolloError(
