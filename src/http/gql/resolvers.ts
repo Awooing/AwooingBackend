@@ -1,32 +1,40 @@
 import { ApolloError, ApolloServer, IResolvers } from 'apollo-server'
 import * as argon2 from 'argon2'
 import Jwt, { JwtPayload } from '../helpers/Jwt'
-import Article from '../../db/entity/Article'
+import Article, { IArticle } from '../../db/entity/Article'
 import User from '../../db/entity/User'
+import ArticleComment from '../../db/entity/ArticleComment'
+import { ArticleRepository } from '../../db/repository/ArticleRepository'
 
 export const resolvers: IResolvers = {
   Query: {
     me: async (_, __, { token }) => {
-      if (!token.valid) return null
+      if (!token.valid) {
+        console.log('invalid')
+        return null
+      }
 
       const payload = token.payload as JwtPayload
 
       const user = await User.findById(payload.userId)
-      if (!user) return null
+      if (!user) {
+        console.log('not found')
+        return null
+      }
 
       return user
     },
     articleById: async (_, { id }) => {
-      const article = Article.findById(id)
+      const article = await Article.findById(id)
       if (!article) return null
 
       return article
     },
-    articleBySlug: async (_, { slug }) => {
-      const article = Article.findOne(slug)
+    articleBySlug: async (_, { slug: articleSlug }) => {
+      const article = await Article.findOne(articleSlug)
       if (!article) return null
 
-      return article
+      return new ArticleRepository().getGqlResponse(article)
     },
   },
   Mutation: {
@@ -161,7 +169,58 @@ export const resolvers: IResolvers = {
         throw new ApolloError("Article doesn't exist.", 'ARTICLE_NOT_FOUND')
       }
 
+      const comments = await ArticleComment.find({ articleId: article.id })
+      if (comments) {
+        for (const comment of comments) {
+          await comment.deleteOne()
+        }
+      }
+
       await article.deleteOne()
+
+      return true
+    },
+
+    createComment: async (_, { articleId, content }, { token }) => {
+      if (!token.valid) return null
+      const payload = token.payload
+
+      const user = await User.findById(payload.userId)
+      if (!user) {
+        throw new ApolloError('You are not logged in.', 'NOT_LOGGED_IN')
+      }
+
+      const article = Article.findById(articleId)
+      if (!article) {
+        throw new ApolloError(
+          "Article with that id doesn't exist.",
+          'ARTICLE_NOT_FOUND'
+        )
+      }
+
+      const comment = await ArticleComment.create({
+        articleId,
+        content,
+        authorId: token.payload.userId,
+      })
+
+      return comment
+    },
+    deleteComment: async (_, { commentId }, { token }) => {
+      if (!token.valid) return null
+      const payload = token.payload
+
+      const user = await User.findById(payload.userId)
+      if (!user) {
+        throw new ApolloError('You are not logged in.', 'NOT_LOGGED_IN')
+      }
+
+      const comment = await ArticleComment.findById(commentId)
+      if (!comment) {
+        throw new ApolloError('Article not found.', 'ARTICLE_NOT_FOUND')
+      }
+
+      await comment.deleteOne()
 
       return true
     },

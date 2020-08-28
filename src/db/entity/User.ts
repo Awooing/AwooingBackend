@@ -1,5 +1,7 @@
-import { Schema, Document, model, HookNextFunction } from 'mongoose'
+import mongoose, { Schema, Document, model, HookNextFunction } from 'mongoose'
 import * as argon2 from 'argon2'
+import slugify from 'slugify'
+import shortid from 'shortid'
 
 export interface IUser extends Document {
   username: string
@@ -17,7 +19,7 @@ export interface IUser extends Document {
 
 const User = new Schema({
   username: { type: String, required: true, unique: true },
-  sluggedUsername: { type: String, required: true, unique: true },
+  sluggedUsername: { type: String, required: false },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   showAs: { type: String, required: true, default: 'unset' },
@@ -30,6 +32,14 @@ const User = new Schema({
 })
 
 User.pre('save', async function (this: IUser, next: HookNextFunction) {
+  let slug = this.sluggedUsername || slugify(this.username, { lower: true })
+  const bySlug = await mongoose.connection
+    .collection('awoo_user')
+    .findOne({ sluggedUsername: slug })
+  bySlug && (slug = `${slug}-${shortid.generate()}}`)
+
+  this.sluggedUsername = slug
+
   this.password = await argon2.hash(this.password)
   next()
 })

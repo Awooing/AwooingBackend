@@ -15,6 +15,8 @@ export const typeDefs = gql`
     createArticle(title: String!, content: String!): Boolean
     editArticle(id: ID!, title: String, content: String): Boolean
     deleteArticle(id: ID!): Boolean
+    createComment(articleId: String!, content: String!): ArticleComment
+    deleteComment(commentId: String!): Boolean
   }
 
   type LoginResult {
@@ -49,7 +51,6 @@ export const typeDefs = gql`
     content: String
     author: User
     createdAt: String
-    comments: [ArticleComment]
   }
 
   type CouncilMember {
@@ -70,7 +71,7 @@ export const typeDefs = gql`
 
   type ArticleComment {
     id: ID!
-    post: Article
+    postId: String
     author: User
     content: String
     createdAt: String

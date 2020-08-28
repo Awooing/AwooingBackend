@@ -1,5 +1,6 @@
 import { IArticle } from '../entity/Article'
 import ArticleComment, { IArticleComment } from '../entity/ArticleComment'
+import User from '../entity/User'
 
 export class ArticleCommentRepository {
   async findAll(): Promise<IArticleComment[]> {
@@ -33,6 +34,13 @@ export class ArticleCommentRepository {
     if (count < perPage) return 1
 
     return Math.ceil(count / perPage)
+  }
+
+  async getGqlResponse(comment: IArticleComment) {
+    let author = await User.findOne({ id: comment.authorId })
+    if (!author) author = null
+
+    return {}
   }
 }
 

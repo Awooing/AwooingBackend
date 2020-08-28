@@ -1,6 +1,5 @@
 import Article, { IArticle } from '../entity/Article'
-import { IUser } from '../entity/User'
-
+import User, { IUser } from '../entity/User'
 export class ArticleRepository {
   async findAll(): Promise<IArticle[]> {
     const articles = await Article.find()
@@ -24,7 +23,7 @@ export class ArticleRepository {
 
   async findBySlug(slug: string): Promise<IArticle | null> {
     const article = Article.findOne({ slug })
-    return article ?? null
+    return article || null
   }
 
   async findPageCount(perPage: number) {
@@ -35,5 +34,21 @@ export class ArticleRepository {
     if (count < perPage) return 1
 
     return Math.ceil(count / perPage)
+  }
+
+  async getGqlResponse(article: IArticle) {
+    const { id, title, slug, content, userId, createdAt } = article as any
+
+    let author = await User.findById(userId)
+    if (!author) author = null
+
+    return {
+      id,
+      title,
+      slug,
+      content,
+      author,
+      createdAt,
+    }
   }
 }

@@ -53,10 +53,14 @@ export class Awooing {
     resolvers,
     playground: Awooing.env() === 'development',
     context: ({ req }) => {
+      const withoutBearer = String(req.headers.authorization || '').replace(
+        'Bearer ',
+        ''
+      )
       return {
         token: {
-          valid: Jwt.isValid(req.headers.authorization || ''),
-          payload: Jwt.getPayload(req.headers.authorization || ''),
+          valid: Jwt.isValid(withoutBearer),
+          payload: Jwt.getPayload(withoutBearer),
         },
         isAuthenticated: Boolean(req.headers.authorization),
       }
