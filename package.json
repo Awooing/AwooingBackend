@@ -8,7 +8,7 @@
     "dev": "NODE_ENV=development nodemon -e ts,js,json --exec ts-node .",
 
     "format": "prettier --write src/**/*.ts --list-different",
-    "format:watch": "niodemon -e ts,js,json --exec yarn format",
+    "format:watch": "nodemon -e ts,js,json --exec yarn format",
 
     "lint": "eslint . --ext .ts",
     "lint:watch": "nodemon -e ts,js,json --exec yarn lint",
