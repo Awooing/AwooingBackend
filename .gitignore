@@ -7,3 +7,6 @@ tsconfig.tsbuildinfo
 # IDEs
 .idea
 .vscode
+
+# Deprecated temp files
+/src/http/gql_

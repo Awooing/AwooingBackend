@@ -6,8 +6,14 @@
   "scripts": {
     "start": "NODE_ENV=production ts-node .",
     "dev": "NODE_ENV=development nodemon -e ts,js,json --exec ts-node .",
+
     "format": "prettier --write src/**/*.ts --list-different",
-    "prec": "yarn format",
+    "format:watch": "niodemon -e ts,js,json --exec yarn format",
+
+    "lint": "eslint . --ext .ts",
+    "lint:watch": "nodemon -e ts,js,json --exec yarn lint",
+
+    "prec": "yarn format && yarn lint",
     "c": "git add . && git commit -m",
     "p": "git push origin"
   },
@@ -19,16 +25,21 @@
   "dependencies": {
     "@types/jsonwebtoken": "^8.5.0",
     "@types/shortid": "^0.0.29",
+    "@typescript-eslint/eslint-plugin": "^3.10.1",
     "apollo-server": "^2.17.0",
     "argon2": "^0.26.2",
     "aws-sdk": "^2.706.0",
     "axios": "^0.19.2",
+    "class-validator": "^0.12.2",
     "dotenv": "^8.2.0",
+    "graphql": "^15.3.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.20",
+    "reflect-metadata": "^0.1.13",
     "shortid": "^2.2.15",
     "slugify": "^1.4.4",
     "ts-node": "^9.0.0",
+    "type-graphql": "^1.0.0",
     "typescript": "^3.9.7",
     "winston": "^3.3.3"
   },
@@ -37,6 +48,8 @@
     "@types/axios": "^0.14.0",
     "@types/dotenv": "^8.2.0",
     "@types/mongoose": "^5.7.28",
+    "@typescript-eslint/parser": "^3.10.1",
+    "eslint": "^7.7.0",
     "nodemon": "^2.0.4",
     "prettier": "^2.0.5"
   }
