@@ -21,16 +21,12 @@
     "axios": "^0.19.2",
     "dotenv": "^8.2.0",
     "fastify": "^3.9.1",
-    "fastify-auth": "^1.0.1",
     "fastify-cors": "^5.0.0",
-    "fastify-jwt": "^2.1.3",
     "fastify-rate-limit": "^4.1.0",
     "mongoose": "^5.9.20",
-    "parse-bearer-token": "^1.0.1",
     "shortid": "^2.2.16",
     "slugify": "^1.4.4",
-    "typescript": "^3.9.5",
-    "yup": "^0.32.6"
+    "typescript": "^3.9.5"
   },
   "devDependencies": {
     "@types/aws-sdk": "^2.7.0",
