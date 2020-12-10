@@ -55,6 +55,11 @@ class Awooing {
   }
 
   async initFastify() {
+    this.server.getFastify().register(fastifyRateLimit, {
+      global: false,
+      max: 1,
+      timeWindow: 1000 * 60,
+    })
     try {
       await this.server.listen()
     } catch (_) {
