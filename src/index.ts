@@ -1,94 +1,106 @@
 /**
  * Awooing.moe Backend
- * 2020 Vottus
  *
- * File: index.ts
- *
+ * @author Project Awooing
+ * @license PROPRIETARY
  */
 
 /** Imports */
 
 // Configuration
-import config from './config'
+import { port, database } from './config'
 
 // Database
-import * as mongoose from 'mongoose'
+import {
+  Connection as MongooseConnection,
+  connect,
+  connection as mongoose,
+} from 'mongoose'
 
-import * as fastify from 'fastify'
-import { Server, IncomingMessage, ServerResponse } from 'http'
-import * as fastifyJWT from 'fastify-jwt'
-import * as fastifyRateLimit from 'fastify-rate-limit'
-import { FastifyRateLimitOptions } from 'fastify-rate-limit'
-import * as fastifyCors from 'fastify-cors'
-import * as fastifyAuth from 'fastify-auth'
-import userController from './controllers/userController'
-import authentictePlugin from './plugins/authenticte-plugin'
-import newsController from './controllers/newsController'
-import articleController from './controllers/articleController'
-import councilController from './controllers/councilController'
+import { hookFastify } from '@fasteerjs/fasteer'
+import fastifyRateLimit from 'fastify-rate-limit'
+import path from 'path'
+import { err, frmt, mdb } from './console'
 
-const server: fastify.FastifyInstance<
-  Server,
-  IncomingMessage,
-  ServerResponse
-> = fastify({})
+class Awooing {
+  server = hookFastify({
+    port,
+    controllers: [
+      path.join(__dirname, 'http', 'controllers', '*.controller.ts'),
+    ],
+    cors: true,
+    helmet: true,
+  })
+  mongoose = mongoose
 
-// server.register(mongooseModelPlugin)
+  startLoadTime = Date.now()
+  finishLoadTime = 0
 
-server.register(fastifyAuth)
-server.register(fastifyJWT, {
-  secret: config.jwtSecret,
-})
-server.register(authentictePlugin)
-
-server.register(fastifyRateLimit, {
-  global: false,
-  max: 1,
-  timeWindow: 1000 * 60,
-} as FastifyRateLimitOptions)
-
-server.register(fastifyCors)
-
-server.register(newsController)
-server.register(articleController)
-server.register(councilController)
-server.register(userController)
-
-const initServer = async () => {
-  try {
-    await server.listen(config.port, '0.0.0.0')
-    console.log('[Awooing] [fastify] Server is running on port', config.port)
-  } catch (err) {
-    console.error('[Awooing] [Express] An error has occurred: ', err)
-    server.log.error(err)
-    process.exit(1)
+  constructor() {
+    this.init()
   }
-}
 
-const initMongoDB = async () => {
-  mongoose.connection
-    .on('error', (error) =>
-      console.error('[Awooing] [MongoDB] An error has occurred: ', error)
-    )
-    .on('disconnected', () =>
-      console.log('[Awooing] [MongoDB] got disconnected')
-    )
-    .once('open', initServer)
+  async init() {
+    await this.initDatabase()
+    await this.initFastify()
+    this.finishLoadTime = Date.now()
 
-  async function connectDb() {
-    await mongoose.connect(
-      `mongodb://localhost:27017/?readPreference=primary&&ssl=false`,
-      {
+    this.logger().info(
+      frmt(
+        `Started Awooing Backend in ${
+          this.finishLoadTime - this.startLoadTime
+        }ms`
+      )
+    )
+  }
+
+  async initFastify() {
+    try {
+      await this.server.listen()
+    } catch (_) {
+      this.exit(1, 'Could not start Fastify!')
+    }
+  }
+
+  async initDatabase() {
+    this.mongoose
+      .on('error', (e) => {
+        this.logger().error(frmt(mdb(), err('Error:', e.message)))
+        this.logger().error(e)
+      })
+      .on('disconnected', () =>
+        this.logger().error(frmt(mdb(), err('Got disconnected!')))
+      )
+
+    this.logger().info(frmt(mdb(), 'Connecting...'))
+
+    try {
+      await connect(database, {
         keepAlive: true,
         useNewUrlParser: true,
         useUnifiedTopology: true,
         useCreateIndex: true,
         autoIndex: false,
-      }
-    )
+      })
+      this.logger().info(frmt(mdb(), 'Connected!'))
+    } catch (e) {
+      this.exit(1, 'Could not connect to MongoDB!')
+    }
   }
-  await connectDb()
-  console.log(`[Awooing] [MongoDB] Connected successfully.`)
+
+  logger() {
+    return this.server.logger
+  }
+
+  exit(code = 0, cause = 'Unknown') {
+    const message = frmt('Shutting dowm with code', code, '| Cause:', cause)
+
+    if (this.server.logger) this.logger().warn(message)
+    else console.warn(message)
+
+    process.exit(code)
+  }
 }
 
-initMongoDB()
+const awoo = new Awooing()
+export default awoo
