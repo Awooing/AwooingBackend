@@ -1,21 +1,39 @@
 {
-  "name": "awooing-backend",
-  "version": "1.0.0",
+  "name": "@awooing/backend",
+  "version": "2.0.0",
   "description": "Backend for the Awooing.moe website",
   "main": "build/index.js",
   "scripts": {
-    "start": "node ./build/index",
-    "dev": "tsc && nodemon .",
-    "compile": "tsc --build --incremental",
-    "format": "prettier --write src/**/*.ts --list-different"
+    "start:dev": "tsnd src/index.ts",
+    "start:prod": "tsc -p tsconfig.json && node build/index.js",
+    "style:format": "prettier --write src/**/*.ts --list-different",
+    "style:lint": "eslint",
+    "postinstall": "husky install"
   },
-  "keywords": [],
-  "author": "Filip Vottus",
-  "license": "ISC",
+  "author": {
+    "name": "Project Awooing",
+    "url": "https://github.com/Awooing",
+    "email": "awooing@awooing.moe"
+  },
+  "contributors": [
+    {
+      "name": "Niputi",
+      "url": "https://github.com/Niputi_"
+    },
+    {
+      "name": "Mia / VottusCode",
+      "url": "https://github.com/VottusCode"
+    }
+  ],
+  "keywords": [
+    "awoo",
+    "awooing.moe"
+  ],
+  "private": true,
+  "license": "PROPRIETARY",
   "dependencies": {
     "@fasteerjs/fasteer": "^1.0.1",
     "@typegoose/typegoose": "^7.4.5",
-    "@types/shortid": "^0.0.29",
     "argon2": "^0.26.2",
     "aws-sdk": "^2.706.0",
     "axios": "^0.19.2",
@@ -23,17 +41,24 @@
     "fastify": "^3.9.1",
     "fastify-cors": "^5.0.0",
     "fastify-rate-limit": "^4.1.0",
+    "husky": "^5.0.4",
     "mongoose": "^5.9.20",
     "shortid": "^2.2.16",
     "slugify": "^1.4.4",
-    "typescript": "^3.9.5"
+    "typescript": "^4.1.2"
   },
   "devDependencies": {
     "@types/aws-sdk": "^2.7.0",
     "@types/axios": "^0.14.0",
     "@types/dotenv": "^8.2.0",
     "@types/mongoose": "^5.7.28",
+    "@types/shortid": "^0.0.29",
+    "@typescript-eslint/eslint-plugin": "^4.9.1",
+    "@typescript-eslint/parser": "^4.9.1",
+    "eslint": "^7.15.0",
     "nodemon": "^2.0.4",
-    "prettier": "^2.0.5"
+    "prettier": "^2.2.1",
+    "ts-node": "^9.1.1",
+    "ts-node-dev": "^1.1.1"
   }
 }
