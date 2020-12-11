@@ -23,7 +23,9 @@ export class CouncilMemberDto {
 
   static async fromMembers(entities: CouncilMember[], fetchAvatars = false) {
     const dtos = Promise.all(
-      entities.map(async entity => CouncilMemberDto.fromMember(entity))
+      entities.map(async entity =>
+        CouncilMemberDto.fromMember(entity, fetchAvatars)
+      )
     )
 
     return dtos
