@@ -1,4 +1,5 @@
 import { FastifyRequest } from 'fastify'
+import UserDto from '../../dto/db/UserDto'
 import User, { User as DBUser, UserRole } from '../../db/entity/User'
 import Jwt, { JwtPayload } from '../helpers/jwt.helper'
 import {
@@ -12,6 +13,7 @@ export type UserContextResponse = {
   success: true
   payload: JwtPayload
   user: DBUser
+  dtoUser: UserDto
   // TODO: add field dtoUser when Dto for User is made
 }
 
@@ -49,5 +51,10 @@ export const useUserContext = async (
       return errorRes(UserContextErrors.ACCOUNT_UNAUTHORIZED)
   }
 
-  return { success: true, payload, user } as UserContextResponse
+  return {
+    success: true,
+    payload,
+    user,
+    dtoUser: UserDto.fromUser(user),
+  } as UserContextResponse
 }

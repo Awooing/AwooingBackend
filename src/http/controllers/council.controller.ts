@@ -1,13 +1,14 @@
 import CouncilMember from '../../db/entity/CouncilMember'
 import { Fasteer as F } from '@fasteerjs/fasteer'
 import { successRes } from '../helpers/response.helper'
+import CouncilMemberDto from '../../dto/db/CouncilMemberDto'
 
 export const routePrefix = '/council'
 
-export const CouncilController: F.FCtrl = async (fastify) => {
+export const CouncilController: F.FCtrl = async fastify => {
   fastify.get('/', async (req, res) => {
     const members = await CouncilMember.find()
-    successRes({ members }) // TODO: make DTO class
+    successRes({ members: CouncilMemberDto.fromMembers(members) }) // TODO: make DTO class
   })
 }
 

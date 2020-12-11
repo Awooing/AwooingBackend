@@ -5,6 +5,7 @@ import { ErrorKinds, errorRes, successRes } from '../helpers/response.helper'
 import argon from 'argon2'
 import Jwt from '../helpers/jwt.helper'
 import slugify from 'slugify'
+import UserDto from '../../dto/db/UserDto'
 
 export const routePrefix = '/auth'
 
@@ -27,7 +28,7 @@ export const UserControllerErrors = {
   },
 }
 
-export const AuthController: F.FCtrl = async (fastify) => {
+export const AuthController: F.FCtrl = async fastify => {
   fastify.post<AS.Login>(
     '/login',
     {
@@ -46,7 +47,7 @@ export const AuthController: F.FCtrl = async (fastify) => {
         return errorRes(UserControllerErrors.Login.INCORRECT_PASSWORD)
 
       const token = Jwt.create({ userId: user.id }, true)
-      return successRes({ token, user }) // TODO: dto
+      return successRes({ token, user: UserDto.fromUser(user) }) // TODO: dto
     }
   )
 

@@ -10,6 +10,7 @@ import {
   successRes,
 } from '../helpers/response.helper'
 import { useUserContext } from '../context/user.context'
+import ArticleDto from '../../dto/db/ArticleDto'
 
 export const routePrefix = '/article'
 
@@ -24,14 +25,14 @@ export const ArticleControllerErrors = {
   },
 }
 
-export const ArticleController: F.FCtrl = async (server) => {
+export const ArticleController: F.FCtrl = async server => {
   server.get<AS.List>('/list', { schema: AS.articleList }, async (req, res) => {
     const maxPerPage = req.query.perPage
     const articles = await Article.find()
       .skip(maxPerPage * (req.query.currentPage - 1))
       .limit(maxPerPage)
     res.send({
-      news: articles,
+      news: await ArticleDto.fromArticles(articles, true),
       pageInfo: {
         current: req.query.currentPage,
         last: await articlePageCount(maxPerPage),
@@ -50,7 +51,7 @@ export const ArticleController: F.FCtrl = async (server) => {
       if (!article)
         return errorRes(ArticleControllerErrors.Common.UNKNOWN_ARTICLE, res)
 
-      successRes({ article }, res) // TODO: Make Dto
+      successRes({ article: await ArticleDto.fromArticle(article, true) }, res) // TODO: Make Dto
     }
   )
 
@@ -62,7 +63,7 @@ export const ArticleController: F.FCtrl = async (server) => {
       if (!article)
         return errorRes(ArticleControllerErrors.Common.UNKNOWN_ARTICLE, res)
 
-      successRes({ article }, res) // TODO: Make Dto
+      successRes({ article: await ArticleDto.fromArticle(article, true) }, res) // TODO: Make Dto
     }
   )
 
@@ -112,7 +113,10 @@ export const ArticleController: F.FCtrl = async (server) => {
         userId: ctx.payload.userId,
       })
 
-      return successRes({ message: 'Created', article }) // TODO: Make Dto
+      return successRes({
+        message: 'Created',
+        article: await ArticleDto.fromArticle(article, false),
+      }) // TODO: Make Dto
     }
   )
 }
