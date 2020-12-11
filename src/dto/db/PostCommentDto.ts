@@ -1,5 +1,5 @@
-import { PostComment } from '../entity/PostComment'
-import UserEntity, { User } from '../entity/User'
+import { PostComment } from '../../db/entity/PostComment'
+import UserEntity, { User } from '../../db/entity/User'
 import UserDto from './UserDto'
 
 export class PostCommentDto {

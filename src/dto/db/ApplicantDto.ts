@@ -1,13 +1,13 @@
-import { Applicant } from '../entity/Applicant'
+import { Applicant } from '../../db/entity/Applicant'
 
 export class ApplicantDto {
-  constructor(applicant: Applicant) {
-    this.name = applicant.name
-    this.content = applicant.content
+  constructor(entity: Applicant) {
+    this.name = entity.name
+    this.content = entity.content
   }
 
-  static fromApplicant(applicant: Applicant) {
-    return new this(applicant)
+  static fromApplicant(entity: Applicant) {
+    return new this(entity)
   }
 
   name: string

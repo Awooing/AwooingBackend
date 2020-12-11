@@ -1,4 +1,4 @@
-import { User, UserRole } from '../entity/User'
+import { User, UserRole } from '../../db/entity/User'
 
 export class UserDto {
   constructor(entity: User) {

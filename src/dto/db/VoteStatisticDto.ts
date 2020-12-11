@@ -1,4 +1,4 @@
-import { VoteStatistic } from '../entity/VoteStatistic'
+import { VoteStatistic } from '../../db/entity/VoteStatistic'
 
 export class VoteStatisticDto {
   constructor(entity: VoteStatistic) {

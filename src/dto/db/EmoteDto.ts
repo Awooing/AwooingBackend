@@ -1,4 +1,4 @@
-import { Emote } from '../entity/Emote'
+import { Emote } from '../../db/entity/Emote'
 
 export class EmoteDto {
   constructor(entity: Emote) {

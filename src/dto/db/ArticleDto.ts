@@ -1,5 +1,5 @@
-import { Article } from '../entity/Article'
-import UserEntity, { User } from '../entity/User'
+import { Article } from '../../db/entity/Article'
+import UserEntity, { User } from '../../db/entity/User'
 import UserDto from './UserDto'
 
 export class ArticleDto {

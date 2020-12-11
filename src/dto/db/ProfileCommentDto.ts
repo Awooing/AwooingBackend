@@ -1,5 +1,5 @@
-import { ProfileComment } from '../entity/ProfileComment'
-import UserEntity, { User } from '../entity/User'
+import { ProfileComment } from '../../db/entity/ProfileComment'
+import UserEntity, { User } from '../../db/entity/User'
 import UserDto from './UserDto'
 
 export class ProfileCommentDto {
