@@ -11,22 +11,23 @@
 import { port, database } from './config'
 
 // Database
-import {
-  Connection as MongooseConnection,
-  connect,
-  connection as mongoose,
-} from 'mongoose'
+import { connect, connection as mongoose } from 'mongoose'
 
+import env from 'dotenv'
 import { hookFastify } from '@fasteerjs/fasteer'
 import fastifyRateLimit from 'fastify-rate-limit'
 import path from 'path'
 import { err, frmt, mdb } from './console'
 
+env.config()
+
 class Awooing {
   server = hookFastify({
     port,
     controllers: [
-      path.join(__dirname, 'http', 'controllers', '*.controller.ts'),
+      ...['js', 'ts'].map(ext =>
+        path.join(__dirname, 'http', 'controllers', `*.controller.${ext}`)
+      ),
     ],
     cors: true,
     helmet: true,
@@ -69,7 +70,7 @@ class Awooing {
 
   async initDatabase() {
     this.mongoose
-      .on('error', (e) => {
+      .on('error', e => {
         this.logger().error(frmt(mdb(), err('Error:', e.message)))
         this.logger().error(e)
       })
@@ -91,6 +92,14 @@ class Awooing {
     } catch (e) {
       this.exit(1, 'Could not connect to MongoDB!')
     }
+  }
+
+  static dev() {
+    return process.env.NODE_ENV === 'development'
+  }
+
+  static prod() {
+    return process.env.NODE_ENV === 'production'
   }
 
   logger() {

@@ -4,8 +4,10 @@
   "description": "Backend for the Awooing.moe website",
   "main": "build/index.js",
   "scripts": {
-    "start:dev": "tsnd src/index.ts",
-    "start:prod": "tsc -p tsconfig.json && node build/index.js",
+    "compile": "tsc -p tsconfig.json",
+    "compile:watch": "yarn compile --watch",
+    "start:dev": "NODE_ENV=development tsnd src/index.ts",
+    "start:prod": "NODE_ENV=production yarn compile && node build/index.js",
     "style:format": "prettier --write src/**/*.ts --list-different",
     "style:lint": "eslint",
     "postinstall": "husky install"
@@ -42,6 +44,7 @@
     "fastify-cors": "^5.0.0",
     "fastify-rate-limit": "^4.1.0",
     "husky": "^5.0.4",
+    "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.20",
     "shortid": "^2.2.16",
     "slugify": "^1.4.4",
@@ -51,6 +54,7 @@
     "@types/aws-sdk": "^2.7.0",
     "@types/axios": "^0.14.0",
     "@types/dotenv": "^8.2.0",
+    "@types/jsonwebtoken": "^8.5.0",
     "@types/mongoose": "^5.7.28",
     "@types/shortid": "^0.0.29",
     "@typescript-eslint/eslint-plugin": "^4.9.1",
