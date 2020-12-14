@@ -10,7 +10,7 @@ export class CdnFetcher {
 
   static cdnUrl = 'https://cdn.awooing.moe/'
 
-  awooImages = async () => {
+  awooImages = async (): Promise<CdnFile[]> => {
     const settings: S3.ListObjectsV2Request = {
       Bucket: 'awooing',
       Prefix: 'i/',
@@ -19,7 +19,7 @@ export class CdnFetcher {
     return results.Contents ? CdnFile.fromObjects(results.Contents) : []
   }
 
-  async randomAwoo(): Promise<CdnFile> {
+  randomAwoo = async (): Promise<CdnFile> => {
     const images = await this.awooImages()
     return images[Math.floor(Math.random() * images.length)]
   }
@@ -37,11 +37,8 @@ export class CdnFile {
   }
 
   static fromObjects(results: S3.ObjectList) {
-    const files = []
-    for (const result of results) {
-      files.push(CdnFile.fromObject(result))
-    }
-    return files
+    const objects = results.map(object => CdnFile.fromObject(object))
+    return objects
   }
 
   static fromObject(result: S3.Object) {

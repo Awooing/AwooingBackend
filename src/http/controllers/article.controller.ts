@@ -32,7 +32,7 @@ export const ArticleController: F.FCtrl = async server => {
       .skip(maxPerPage * (req.query.currentPage - 1))
       .limit(maxPerPage)
     res.send({
-      news: await ArticleDto.fromArticles(articles, true),
+      posts: await ArticleDto.fromArticles(articles, true),
       pageInfo: {
         current: req.query.currentPage,
         last: await articlePageCount(maxPerPage),
