@@ -1,18 +1,21 @@
 import { FastifyReply } from 'fastify'
 
-export interface BaseResponse {
+export interface ErrorDescription {
+  kind: string
+  message: string
+}
+
+export interface BaseResponse<D = unknown, E = ErrorDescription> {
   success: boolean
-  error?: {
-    kind: string
-    message: string
-  }
-  data?: unknown
+  error?: E
+  data?: D
 }
 
 export const ErrorKinds = {
   USER_INPUT: 'user_input',
   UNAUTHORIZED: 'unauthorized',
   FORBIDDEN: 'forbidden',
+  INTERNAL: 'internal',
 }
 
 export const CommonErrorResponses = {
@@ -23,6 +26,10 @@ export const CommonErrorResponses = {
   ACCOUNT_UNAUTHORIZED: {
     kind: ErrorKinds.UNAUTHORIZED,
     message: 'Account not privileged to perform this action',
+  },
+  INTERNAL: {
+    kind: ErrorKinds.INTERNAL,
+    message: 'Internal Server Error',
   },
 }
 

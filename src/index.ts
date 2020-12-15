@@ -31,6 +31,28 @@ class Awooing {
     ],
     cors: true,
     helmet: true,
+    logRequests: true,
+    errorHandler: (err, _, res) => {
+      console.log(err)
+      res
+        .status(res.statusCode ? res.statusCode : err.validation ? 419 : 500)
+        .send({
+          httpCode: res.statusCode
+            ? res.statusCode
+            : err.validation
+            ? 419
+            : 500,
+          message: err.validation
+            ? 'Validation Error'
+            : process.env.NODE_ENV == 'development'
+            ? err.message
+            : 'Internal Server Error',
+          ...(err.validation ? { validationErrors: err.validation } : {}),
+          ...(process.env.NODE_ENV == 'development' && !err.validation
+            ? { stack: err.stack }
+            : {}),
+        })
+    },
   })
   mongoose = mongoose
 

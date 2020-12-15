@@ -31,13 +31,16 @@ export const ArticleController: F.FCtrl = async server => {
     const articles = await Article.find()
       .skip(maxPerPage * (req.query.currentPage - 1))
       .limit(maxPerPage)
-    res.send({
-      posts: await ArticleDto.fromArticles(articles, true),
-      pageInfo: {
-        current: req.query.currentPage,
-        last: await articlePageCount(maxPerPage),
+    successRes(
+      {
+        posts: await ArticleDto.fromArticles(articles, true),
+        pageInfo: {
+          current: req.query.currentPage,
+          last: await articlePageCount(maxPerPage),
+        },
       },
-    })
+      res
+    )
   })
 
   server.get<AS.GetById>(
